@@ -48,12 +48,11 @@ def create_parser():
         description="Script to BertTCR with  data.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument('--eval', type=str,
-                        default='./THCA/TestData.tsv',
-                        help='evaluation set')
-    parser.add_argument('--train', type=str,
-                        default='./THCA/TrainingData.tsv',
-                        help='training set')
+    parser.add_argument('--inputdir', type=str,
+                        help='input directory including CDR3 sequences text files')
+    parser.add_argument('--outdir', type=str,
+                        default='./',
+                        help='output directory for saving results')
     parser.add_argument('--tcrlen', type=int, default=24,
                         help='tcr length')
     parser.add_argument('--epochs', type=int, default=30,
@@ -123,10 +122,8 @@ class BertDataset(Dataset):
         return ret
 
     def collate_fn(self, batch) -> Dict[str, torch.Tensor]:
-        #import pdb
         elem = batch[0]
         batch = {key: [d[key] for d in batch] for key in elem}
-        #pdb.set_trace()
         input_ids = torch.from_numpy(tape_pad(batch['input_ids'], 0))
         
         input_mask = torch.from_numpy(tape_pad(batch['input_mask'], 0))
@@ -141,12 +138,9 @@ class BertDataset(Dataset):
 
 if __name__ == "__main__":
     # Parse arguments.
-    #import pdb; pdb.set_trace()
     args = create_parser()
     torch.manual_seed(args.seed)
-    args.tcrlen=24 
-    file_path = '../../test.01'##floder name ValidationData\TestData\TrainingData
-    save_path = '../../test.01.pth'
+    file_path, save_path = args.inputdir, args.outdir
     
     # Gets all the file names in the folder and encodes them in sort order
     file_list = sorted(os.listdir(file_path))
@@ -155,11 +149,9 @@ if __name__ == "__main__":
     model = BertTCR.from_pretrained('bert-base').to(device)
     file_count = 0  # Record the number of files
     for file_name in file_list:
-        #if file_count == 117: import pdb; pdb.set_trace()
         if file_name.endswith('.tsv'):
             file_count += 1
-            args.train = file_name
-            trainset = BertDataset(args.train, max_tcr_len=args.tcrlen, instance_weight=args.instance_weight)
+            trainset = BertDataset(file_name, max_tcr_len=args.tcrlen, instance_weight=args.instance_weight)
             train_data = DataLoader(trainset, batch_size=args.batch_size, shuffle=True, num_workers=0, pin_memory=True, collate_fn=trainset.collate_fn)
             batch_count = 0  # Used to record the number of batches
 
@@ -168,9 +160,4 @@ if __name__ == "__main__":
                 input_ids = batch['input_ids'].to(device)
                 input_mask = batch['input_mask'].to(device)
                 outputs = model.forward(input_ids, input_mask)
-                #import pdb; pdb.set_trace()
                 np.savetxt(os.path.join(save_path, file_name), outputs[1].detach().numpy(), delimiter = '\t')
-                #torch.save(outputs, os.path.join(save_path, file_name.replace('.tsv', '.pt')))
-
-                
-

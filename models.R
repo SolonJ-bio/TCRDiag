@@ -7,10 +7,8 @@
 #' @return List of trained base models
 trainFirstLayer <- function(feature_data, labels, k = 5) {
     base_models <- list()
-
     for (feature_name in names(feature_data)) {
         feature_matrix <- feature_data[[feature_name]]
-
         # Parameter grids for each algorithm
         param_grids <- list(
             glm = expand.grid(
@@ -54,7 +52,6 @@ trainFirstLayer <- function(feature_data, labels, k = 5) {
                 params = param_grids$glm[i, ]
             )
         }
-
         # XGBoost
         for (i in 1:nrow(param_grids$xgboost)) {
             set.seed(123)
@@ -76,7 +73,6 @@ trainFirstLayer <- function(feature_data, labels, k = 5) {
                 params = param_grids$xgboost[i, ]
             )
         }
-
         # Random Forest
         for (i in 1:nrow(param_grids$rf)) {
             set.seed(123)
@@ -92,7 +88,6 @@ trainFirstLayer <- function(feature_data, labels, k = 5) {
                 params = param_grids$rf[i, ]
             )
         }
-
         # Neural Network
         for (i in 1:nrow(param_grids$nn)) {
             set.seed(123)
@@ -109,13 +104,11 @@ trainFirstLayer <- function(feature_data, labels, k = 5) {
                 params = param_grids$nn[i, ]
             )
         }
-
         # Select top k models for this feature type
         aucs <- sapply(results, function(x) x$auc)
         top_models <- results[order(aucs, decreasing = TRUE)[1:k]]
         base_models[[feature_name]] <- top_models
     }
-
     return(base_models)
 }
 
@@ -156,7 +149,7 @@ getBasePredictions <- function(base_models, feature_data) {
             col_idx <- col_idx + 1
         }
     }
-
+    rownames(base_predictions) <- rownames(feature_data[[1]])
     return(base_predictions)
 }
 
@@ -244,6 +237,10 @@ trainSecondLayer <- function(base_predictions, labels, n_models = 10) {
     return(top_models)
 }
 
+#' @param stack_models List of trained stacking models
+#' @param new_data Data for predictions
+#' @return Prediction scores
+
 predictStackModels <- function(stack_models, new_data) {
     # Store predictions from each model
     model_predictions <- numeric(nrow(new_data))
@@ -254,15 +251,15 @@ predictStackModels <- function(stack_models, new_data) {
         model <- model_info$model
         if (inherits(model, "cv.glmnet")) {
             pred <- predict(model,
-                newx = as.matrix(feature_matrix),
+                newx = as.matrix(new_data),
                 s = "lambda.min", type = "response"
             )
         } else if (inherits(model, "xgb.Booster")) {
-            pred <- predict(model, as.matrix(feature_matrix))
+            pred <- predict(model, as.matrix(new_data))
         } else if (inherits(model, "randomForest")) {
-            pred <- predict(model, feature_matrix, type = "prob")[, 2]
+            pred <- predict(model, new_data, type = "prob")[, 2]
         } else if (inherits(model, "nnet")) {
-            pred <- predict(model, feature_matrix)
+            pred <- predict(model, new_data)
         }
         model_predictions <- model_predictions + as.vector(pred)
     }
