@@ -9,7 +9,7 @@ suppressMessages(library(nnet))
 suppressMessages(library(pROC))
 
 # =========================================================
-# Load methods for traning model
+# Load model functions
 
 source("models.R")
 
@@ -135,7 +135,7 @@ trainModel <- function(train.motif,
         }
         pca.bert <- prcomp(train.bert, center = TRUE, scale. = TRUE)
         train.bert.pca <- pca.bert$x[, 1:ndims] %>% scale()
-        ovp.sns <- intersect(rownames(train.bert), rownames(train.motif))
+        ovp.sns <- intersect(rownames(train.bert), colnames(train.motif$data))
         train.data <- list(
             Motif = train.motif.pca[ovp.sns, ],
             Bert = train.bert.pca[ovp.sns, ]
@@ -201,7 +201,7 @@ predictRes <- function(test.motif, trained.models, test.bert = NULL) {
         test.bert.pca <- test.bert.scaled %*% trained.models$pca.bert$rotation[, 1:trained.models$ndims] %>% scale()
     }
     if (!is.null(test.bert)) {
-        ovp.sns <- intersect(rownames(test.bert), rownames(test.motif))
+        ovp.sns <- intersect(rownames(test.bert), colnames(test.motif))
         test.data <- list(
             Motif = test.motif.pca[ovp.sns, ],
             Bert = test.bert.pca[ovp.sns, ]
