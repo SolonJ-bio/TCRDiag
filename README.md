@@ -44,10 +44,24 @@ testTCRDiag(train.input = "./data/Lung/TrainingData/", test.input = "./data/Lung
 testTCRDiag(train.input = "./data/THCA/TrainingData/", test.input = "./data/THCA/TestData/")
 ```
 # How to extract features using Protein-BERT model?
-You should install the required Python dependencies first.
+<b>(1). You should install the required Python dependencies first. </b>
 ```
  pip install -r requirements.txt
 ```
+
+<b>(2). Running Protein-BERT model. </b>
+```
+python BERT_embedding_new.py --inputdir=./data/Lung/TrainingData/ --outdir=./TrainOutput/
+python BERT_embedding_new.py --inputdir=./data/Lung/TestData/ --outdir=../TestOutput/
+```
+<b>(3). Training and predicting. </b>
+```r
+kerms.lst <- getKmerMotifs(train.input, test.input, kmers = 5)
+trained.models <- trainModel(kerms.lst$train, pos.lab = "Patient", neg.lab = "Health", train.bert = "./TrainOutput/")
+pred.res <- predictRes(kerms.lst$test, trained.models, test.bert = "../TestOutput/")
+```
+
+
 
 
 

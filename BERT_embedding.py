@@ -141,6 +141,7 @@ if __name__ == "__main__":
     args = create_parser()
     torch.manual_seed(args.seed)
     file_path, save_path = args.inputdir, args.outdir
+    if not os.path.exists(save_path): os.makedirs(save_path)
     
     # Gets all the file names in the folder and encodes them in sort order
     file_list = sorted(os.listdir(file_path))
