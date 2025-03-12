@@ -26,7 +26,9 @@ source('inputRun.R')
 # Specify input data paths containing CDR3 sequences.
 train.input <- "./data/Lung/TrainingData/"
 test.input <- "./data/Lung/TestData/"
+```
 
+```r
 # Train model
 message("Extracting features....")
 kerms.lst <- getKmerMotifs(train.input, test.input, kmers = 5)
