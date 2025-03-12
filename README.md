@@ -22,12 +22,12 @@ If they are not installed in your environment, run the following command to inst
 <b>(1). The following provides a step-by-step guide for training and prediction.</b>
 ```r
 source('inputRun.R')
-
+```
+```r
 # Specify input data paths containing CDR3 sequences.
 train.input <- "./data/Lung/TrainingData/"
 test.input <- "./data/Lung/TestData/"
 ```
-
 ```r
 # Train model
 message("Extracting features....")
