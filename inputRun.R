@@ -123,7 +123,7 @@ trainModel <- function(train.motif,
     if (!is.null(train.bert)) {
         if (dir.exists(train.bert)) {
             files <- list.files(train.bert, full.names = TRUE)
-            lab.names <- gsub("_.*", "", basename(files))
+            lab.names <- gsub("\\.tsv", "", basename(files))
             train.bert <- lapply(files, function(fil) {
                 df <- read.table(fil, sep = "\t") %>% scale()
                 as.vector(as.matrix(df))
@@ -187,7 +187,7 @@ predictRes <- function(test.motif, trained.models, test.bert = NULL) {
     if (!is.null(test.bert)) {
         if (dir.exists(test.bert)) {
             files <- list.files(test.bert, full.names = TRUE)
-            lab.names <- gsub("_.*", "", basename(files))
+            lab.names <- gsub("\\.tsv", "", basename(files))
             test.bert <- lapply(files, function(fil) {
                 df <- read.table(fil, sep = "\t") %>% scale()
                 as.vector(as.matrix(df))
