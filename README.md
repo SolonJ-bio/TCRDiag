@@ -35,3 +35,9 @@ trained.models <- trainModel(kerms.lst$train, pos.lab = "Patient", neg.lab = "He
 message("Predicting....")
 pred.res <- predictRes(kerms.lst$test, trained.models, test.bert = NULL)
 ```
+
+You can also run the following function to test whether TCRDiag is installed successfully.
+```r
+testTCRDiag(train.input = "./data/Lung/TrainingData/", test.input = "./data/Lung/TestData/")
+testTCRDiag(train.input = "./data/THCA/TrainingData/", test.input = "./data/THCA/TestData/")
+```
