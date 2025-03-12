@@ -123,7 +123,7 @@ trainModel <- function(train.motif,
     if (!is.null(train.bert)) {
         if (dir.exists(train.bert)) {
             files <- list.files(train.bert, full.names = TRUE)
-            lab.names <- gsub(".*_|\\.tsv", "", basename(files))
+            lab.names <- gsub("_.*", "", basename(files))
             train.bert <- lapply(files, function(fil) {
                 df <- read.table(fil, sep = "\t") %>% scale()
                 as.vector(as.matrix(df))
@@ -134,7 +134,7 @@ trainModel <- function(train.motif,
                 `rownames<-`(lab.names)
         }
         pca.bert <- prcomp(train.bert, center = TRUE, scale. = TRUE)
-        train.bert.pca <- pca.bert$x[, 1:ndims]
+        train.bert.pca <- pca.bert$x[, 1:ndims] %>% scale()
         ovp.sns <- intersect(rownames(train.bert), rownames(train.motif))
         train.data <- list(
             Motif = train.motif.pca[ovp.sns, ],
@@ -182,12 +182,12 @@ predictRes <- function(test.motif, trained.models, test.bert = NULL) {
         .[trained.models$train.motif, ] %>%
         t()
     test.motif.scaled <- scale(test.motif.sub, center = trained.models$pca.motif$center, scale = trained.models$pca.motif$scale)
-    test.motif.pca <- test.motif.scaled %*% trained.models$pca.motif$rotation[, 1:trained.models$ndims]
+    test.motif.pca <- test.motif.scaled %*% trained.models$pca.motif$rotation[, 1:trained.models$ndims] %>% scale()
 
     if (!is.null(test.bert)) {
         if (dir.exists(test.bert)) {
             files <- list.files(test.bert, full.names = TRUE)
-            lab.names <- gsub(".*_|\\.tsv", "", basename(files))
+            lab.names <- gsub("_.*", "", basename(files))
             test.bert <- lapply(files, function(fil) {
                 df <- read.table(fil, sep = "\t") %>% scale()
                 as.vector(as.matrix(df))
@@ -207,7 +207,7 @@ predictRes <- function(test.motif, trained.models, test.bert = NULL) {
             Bert = test.bert.pca[ovp.sns, ]
         )
     } else {
-        test.data <- list(Motif = test.motif.pca)
+        test.data <- list(Motif = test.motif.pca )
     }
     test.base.pred <- getBasePredictions(trained.models$base.model, test.data)
     pred.res <- predictStackModels(trained.models$stack.model, test.base.pred)
