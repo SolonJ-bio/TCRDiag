@@ -1,6 +1,8 @@
 # A Multi-Layer Machine Learning Approach for Tumor Diagnosis and Staging
 
-![workflow ](https://github.com/SolonJ-bio/TCRDiag/tree/main/workflow/pipeline.png)
+<p align="center">
+	<img src="workflow/pipeline.png" alt="Resized Image" width="800">
+</p>
 
 # Installation
 
