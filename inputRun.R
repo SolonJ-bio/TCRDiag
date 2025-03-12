@@ -243,12 +243,12 @@ evaluatePredict <- function(trained.models) {
 #' @param test.input A directory path containing the test dataset. Default: "./data/Lung/TestData/".
 #' @return NULL.
 
-testTCRDiag <- function(train.input = "./data/Lung/TrainingData/", test.input = "./data/Lung/TestData/") {
+testTCRDiag <- function(train.input = "./data/Lung/TrainingData/", test.input = "./data/Lung/TestData/", ...) {
     message("Extracting features....")
     kerms.lst <- getKmerMotifs(train.input, test.input, kmers = 5)
 
     message("Training and predicting....")
-    trained.models <- trainModel(kerms.lst$train, pos.lab = "Patient", neg.lab = "Health")
+    trained.models <- trainModel(kerms.lst$train, pos.lab = "Patient", neg.lab = "Health", ...)
     pred.res <- predictRes(kerms.lst$test, trained.models, test.bert = NULL)
 
     message("Calculating metrics....")
