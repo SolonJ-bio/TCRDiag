@@ -53,14 +53,14 @@ testTCRDiag(train.input = "./data/THCA/TrainingData/", test.input = "./data/THCA
 
 <b>(2). Running Protein-BERT model. </b>
 ```
-python BERT_embedding_new.py --inputdir=./data/Lung/TrainingData/ --outdir=./TrainOutput/
-python BERT_embedding_new.py --inputdir=./data/Lung/TestData/ --outdir=../TestOutput/
+python BERT_embedding_new.py --inputdir=./data/Lung/TrainingData/ --outdir=./data/Lung/TrainBert/
+python BERT_embedding_new.py --inputdir=./data/Lung/TestData/ --outdir=./data/Lung/TestBert/
 ```
 <b>(3). Training and predicting. </b>
 ```r
 kerms.lst <- getKmerMotifs(train.input, test.input, kmers = 5)
-trained.models <- trainModel(kerms.lst$train, pos.lab = "Patient", neg.lab = "Health", train.bert = "./TrainOutput/")
-pred.res <- predictRes(kerms.lst$test, trained.models, test.bert = "../TestOutput/")
+trained.models <- trainModel(kerms.lst$train, pos.lab = "Patient", neg.lab = "Health", train.bert = "./data/Lung/TrainBert/")
+pred.res <- predictRes(kerms.lst$test, trained.models, test.bert = "./data/Lung/TestBert/")
 ```
 
 # Session infos
