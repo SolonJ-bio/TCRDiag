@@ -19,7 +19,7 @@ If they are not installed in your environment, run the following command to inst
 ```
 # Usage
 
-<b>The following provides a step-by-step guide for training and prediction.</b>
+<b>(1). The following provides a step-by-step guide for training and prediction.</b>
 ```r
 source('inputRun.R')
 
@@ -38,8 +38,16 @@ message("Predicting....")
 pred.res <- predictRes(kerms.lst$test, trained.models, test.bert = NULL)
 ```
 
-<b>You can also run the following function to test whether TCRDiag is installed successfully.</b>
+<b>(2). You can also run the following function to test whether TCRDiag is installed successfully.</b>
 ```r
 testTCRDiag(train.input = "./data/Lung/TrainingData/", test.input = "./data/Lung/TestData/")
 testTCRDiag(train.input = "./data/THCA/TrainingData/", test.input = "./data/THCA/TestData/")
 ```
+# How to extract features using Protein-BERT model?
+You should install the required Python dependencies first.
+```
+ pip install -r requirements.txt
+```
+
+
+
