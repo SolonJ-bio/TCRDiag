@@ -23,7 +23,7 @@ If they are not installed in your environment, run the following command to inst
 ```r
 source('inputRun.R')
 ```
-Specify input data paths containing CDR3 sequences.
+Specify input data paths containing CDR3 sequences
 ```r
 train.input <- "./data/Lung/TrainingData/"
 test.input <- "./data/Lung/TestData/"
