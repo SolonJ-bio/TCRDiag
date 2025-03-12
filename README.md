@@ -19,7 +19,7 @@ If they are not installed in your environment, run the following command to inst
 ```
 # Usage
 
-Follwoing is step by step for training and predicting.
+The following provides a step-by-step guide for training and prediction.
 ```r
 source('inputRun.R')
 
