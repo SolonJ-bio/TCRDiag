@@ -18,3 +18,20 @@ If they are not installed in your environment, run the following command to inst
  install.packages(c('dplyr', 'Seurat', 'caret', 'glmnet', 'xgboost', 'randomForest', 'nnet', 'pROC', 'immunarch'))
 ```
 # Usage
+```r
+source('inputRun.R')
+
+# Specify input data paths containing CDR3 sequences.
+train.input <- "./data/Lung/TrainingData/"
+test.input <- "./data/Lung/TestData/"
+
+# Train model
+message("Extracting features....")
+kerms.lst <- getKmerMotifs(train.input, test.input, kmers = 5)
+
+message("Training....")
+trained.models <- trainModel(kerms.lst$train, pos.lab = "Patient", neg.lab = "Health")
+
+message("Predicting....")
+pred.res <- predictRes(kerms.lst$test, trained.models, test.bert = NULL)
+```
